@@ -1,21 +1,90 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Firebase Google 로그인 예제</title>
-    <!-- CSS 파일 링크 -->
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Login</title>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="container">
+    <h1>Login</h1>
 
-    <!-- 로그인 상태 표시 -->
-    <div id="user-details"></div>
+    <!-- Login Form -->
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <button type="submit" class="btn">Login</button>
+    </form>
 
-    <!-- 로그인 및 로그아웃 버튼 -->
-    <button id="googleLogin">Google로 로그인</button>
-    <button id="logout" style="display: none;">로그아웃</button>
+    <!-- Signup Link -->
+    <p>Don't have an account? <a href="#" id="signupLink">Sign up here</a></p>
 
-    <!-- JavaScript 파일 링크 -->
-    <script type="module" src="app.js"></script>
+    <div id="message"></div>
+  </div>
+
+  <!-- Firebase SDK and JavaScript logic -->
+  <script type="module">
+    // Import Firebase SDK modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+      authDomain: "pointly-28101.firebaseapp.com",
+      projectId: "pointly-28101",
+      storageBucket: "pointly-28101.appspot.com",
+      messagingSenderId: "75956245415",
+      appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+      measurementId: "G-WJWZWFX44Q"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+
+    // Show message on the screen
+    function showMessage(message, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = message;
+      messageDiv.className = type === 'success' ? 'message success' : 'message error';
+    }
+
+    // Login functionality
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          showMessage(`Welcome, ${user.email}`, 'success');
+        })
+        .catch((error) => {
+          showMessage(`Error: ${error.message}`, 'error');
+        });
+    });
+
+    // Signup functionality
+    document.getElementById('signupLink').addEventListener('click', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          showMessage(`Account created for: ${user.email}`, 'success');
+        })
+        .catch((error) => {
+          showMessage(`Error: ${error.message}`, 'error');
+        });
+    });
+  </script>
 </body>
 </html>
