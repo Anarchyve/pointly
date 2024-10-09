@@ -3,14 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Login</title>
+  <title>Login</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Google Login</h1>
-    <button id="googleLoginBtn" class="btn">Login with Google</button>
-    <div id="message"></div>
+    <h1>Login</h1>
+
+    <!-- 교사용 로그인 -->
+    <div class="section">
+      <h2>Teacher Login</h2>
+      <button id="googleLoginBtn" class="btn">Login with Google</button>
+    </div>
+
+    <hr>
+
+    <!-- 학생용 로그인 -->
+    <div class="section">
+      <h2>Student Login</h2>
+      <input type="text" id="studentId" placeholder="Enter your ID" class="input">
+      <input type="password" id="studentPassword" placeholder="Enter your password" class="input">
+      <button id="studentLoginBtn" class="btn">Login</button>
+      <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+      <div id="message"></div>
+    </div>
   </div>
 
   <!-- Firebase Initialization -->
@@ -20,20 +36,21 @@
 
     // Firebase config
     const firebaseConfig = {
-    apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
-    authDomain: "pointly-28101.firebaseapp.com",
-    projectId: "pointly-28101",
-    storageBucket: "pointly-28101.appspot.com",
-    messagingSenderId: "75956245415",
-    appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
-    measurementId: "G-WJWZWFX44Q"
-  };
+      apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+      authDomain: "pointly-28101.firebaseapp.com",
+      projectId: "pointly-28101",
+      storageBucket: "pointly-28101.appspot.com",
+      messagingSenderId: "75956245415",
+      appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+      measurementId: "G-WJWZWFX44Q"
+    };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
+    // 교사용 구글 로그인
     document.getElementById('googleLoginBtn').addEventListener('click', () => {
       signInWithPopup(auth, provider)
         .then(() => {
@@ -42,6 +59,19 @@
         .catch((error) => {
           document.getElementById('message').textContent = `Error: ${error.message}`;
         });
+    });
+
+    // 학생용 로그인 버튼 클릭 이벤트 (단순 로그인을 위한 placeholder 코드)
+    document.getElementById('studentLoginBtn').addEventListener('click', () => {
+      const studentId = document.getElementById('studentId').value;
+      const studentPassword = document.getElementById('studentPassword').value;
+
+      // 여기에서 실제 Firebase Auth나 Firestore를 활용하여 학생 로그인 처리
+      if (studentId === 'student' && studentPassword === 'password') {
+        window.location.href = 'student.html';  // 성공 시 학생 전용 페이지로 이동 (임시)
+      } else {
+        document.getElementById('message').textContent = 'Invalid login credentials';
+      }
     });
   </script>
 </body>
