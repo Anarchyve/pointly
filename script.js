@@ -19,7 +19,7 @@ var firebaseConfig = {
       var provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
           .then(function(result) {
-              // 관리자로 로그인 성공 후 관리자 페이지로 이동
+              // 로그인 성공 시 관리자 페이지로 이동
               window.location.href = 'admin.html';
           })
           .catch(function(error) {
@@ -35,7 +35,7 @@ var firebaseConfig = {
   
       auth.signInWithEmailAndPassword(email, password)
           .then(function(userCredential) {
-              // 학생 로그인 성공 후 학생 페이지로 이동
+              // 로그인 성공 시 학생 페이지로 이동
               window.location.href = 'student.html';
           })
           .catch(function(error) {
