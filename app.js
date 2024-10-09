@@ -1,23 +1,24 @@
-// Import Firebase SDK modules
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-analytics.js";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Firebase configuration
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
-    authDomain: "pointly-28101.firebaseapp.com",
-    projectId: "pointly-28101",
-    storageBucket: "pointly-28101.appspot.com",
-    messagingSenderId: "75956245415",
-    appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
-    measurementId: "G-WJWZWFX44Q"
-  };
-  
+  apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+  authDomain: "pointly-28101.firebaseapp.com",
+  projectId: "pointly-28101",
+  storageBucket: "pointly-28101.appspot.com",
+  messagingSenderId: "75956245415",
+  appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+  measurementId: "G-WJWZWFX44Q"
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const provider = new GoogleAuthProvider();
+const analytics = getAnalytics(app);
 
 // Google login functionality
 document.getElementById('googleLoginBtn').addEventListener('click', () => {
