@@ -13,12 +13,12 @@
   </div>
 
   <!-- Firebase App (the core Firebase SDK) -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
   <!-- Firebase Authentication -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
 
-  <script>
-    // Firebase configuration (필요시 다시 설정)
+  <script type="module">
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
       authDomain: "pointly-28101.firebaseapp.com",
@@ -29,16 +29,14 @@
       measurementId: "G-WJWZWFX44Q"
     };
 
-    // Firebase 초기화
-    firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.getAuth();
 
-    // Firebase Auth 초기화
-    const auth = firebase.auth();
-
-    // 로그아웃 버튼 이벤트 리스너
+    // Logout functionality
     document.getElementById('logoutBtn').addEventListener('click', () => {
       auth.signOut().then(() => {
-        window.location.href = 'index.html'; // 로그아웃 후 로그인 페이지로 리디렉션
+        window.location.href = 'index.html'; // Redirect to login page on logout
       }).catch((error) => {
         console.error('Error logging out:', error);
       });

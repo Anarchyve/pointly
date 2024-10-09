@@ -14,11 +14,11 @@
   </div>
 
   <!-- Firebase App (the core Firebase SDK) -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
   <!-- Firebase Authentication -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
 
-  <script>
+  <script type="module">
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
@@ -30,19 +30,17 @@
       measurementId: "G-WJWZWFX44Q"
     };
 
-    // Firebase 초기화
-    firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.getAuth();
+    const provider = new firebase.GoogleAuthProvider();
 
-    // Firebase Auth 및 Google Provider 초기화
-    const auth = firebase.auth();
-    const provider = new firebase.auth.GoogleAuthProvider();
-
-    // Google 로그인 버튼에 이벤트 리스너 추가
+    // Google login button functionality
     document.getElementById('googleLoginBtn').addEventListener('click', () => {
       auth.signInWithPopup(provider)
         .then((result) => {
           const user = result.user;
-          window.location.href = 'admin.html'; // 로그인 성공 시 관리자 페이지로 리디렉션
+          window.location.href = 'admin.html'; // Redirect to admin page on login success
         })
         .catch((error) => {
           document.getElementById('message').textContent = `Error: ${error.message}`;
