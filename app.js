@@ -1,8 +1,3 @@
-// Import Firebase SDK modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
     authDomain: "pointly-28101.firebaseapp.com",
@@ -12,40 +7,34 @@ const firebaseConfig = {
     appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
     measurementId: "G-WJWZWFX44Q"
   };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const provider = new GoogleAuthProvider();
-
-// Google login functionality
-document.getElementById('googleLoginBtn').addEventListener('click', () => {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      // Successful login, redirect to admin page
-      window.location.href = 'admin.html';
-    })
-    .catch((error) => {
-      // Show error message
-      showMessage(`Error: ${error.message}`, 'error');
-    });
-});
-
-// Logout functionality (for admin page)
-if (document.getElementById('logoutBtn')) {
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    signOut(auth).then(() => {
-      // Redirect to login page after logout
-      window.location.href = 'index.html';
-    }).catch((error) => {
-      console.error('Error logging out:', error);
-    });
+  
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  
+  // Initialize Firebase Authentication and provider
+  const auth = firebase.auth();
+  const provider = new firebase.auth.GoogleAuthProvider();
+  
+  // Google login functionality
+  document.getElementById('googleLoginBtn').addEventListener('click', () => {
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user;
+        window.location.href = 'admin.html'; // Redirect to admin page
+      })
+      .catch((error) => {
+        document.getElementById('message').textContent = `Error: ${error.message}`;
+      });
   });
-}
-
-// Show message on the screen
-function showMessage(message, type) {
-  const messageDiv = document.getElementById('message');
-  messageDiv.textContent = message;
-  messageDiv.className = type === 'success' ? 'message success' : 'message error';
-}
+  
+  // Logout functionality (for admin page)
+  if (document.getElementById('logoutBtn')) {
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = 'index.html'; // Redirect to login page after logout
+      }).catch((error) => {
+        console.error('Error logging out:', error);
+      });
+    });
+  }
+  
