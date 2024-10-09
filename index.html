@@ -3,23 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Login</title>
+  <title>Firebase Google Login</title>
   <!-- External CSS -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Login</h1>
+    <h1>Google Login</h1>
 
-    <!-- Login Form -->
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required><br>
-      <input type="password" id="password" placeholder="Password" required><br>
-      <button type="submit" class="btn">Login</button>
-    </form>
-
-    <!-- Signup Link -->
-    <p>Don't have an account? <a href="#" id="signupLink">Sign up here</a></p>
+    <!-- Google Login Button -->
+    <button id="googleLoginBtn" class="btn">Login with Google</button>
 
     <div id="message"></div>
   </div>
@@ -28,8 +21,7 @@
   <script type="module">
     // Import Firebase SDK modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-analytics.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -44,8 +36,10 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth();
+
+    // Google Authentication provider
+    const provider = new GoogleAuthProvider();
 
     // Show message on the screen
     function showMessage(message, type) {
@@ -54,32 +48,12 @@
       messageDiv.className = type === 'success' ? 'message success' : 'message error';
     }
 
-    // Login functionality
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          showMessage(`Welcome, ${user.email}`, 'success');
-        })
-        .catch((error) => {
-          showMessage(`Error: ${error.message}`, 'error');
-        });
-    });
-
-    // Signup functionality
-    document.getElementById('signupLink').addEventListener('click', function(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          showMessage(`Account created for: ${user.email}`, 'success');
+    // Google login functionality
+    document.getElementById('googleLoginBtn').addEventListener('click', () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          showMessage(`Welcome, ${user.displayName}`, 'success');
         })
         .catch((error) => {
           showMessage(`Error: ${error.message}`, 'error');
