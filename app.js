@@ -1,4 +1,3 @@
-// window.onload를 사용하여 Firebase SDK가 로드된 후 JS 파일이 실행되도록 보장
 window.onload = function() {
     // Firebase configuration
     const firebaseConfig = {
@@ -41,5 +40,4 @@ window.onload = function() {
       });
     }
   };
-  
   
