@@ -4,14 +4,14 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://w
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
-};
+    apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+    authDomain: "pointly-28101.firebaseapp.com",
+    projectId: "pointly-28101",
+    storageBucket: "pointly-28101.appspot.com",
+    messagingSenderId: "75956245415",
+    appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+    measurementId: "G-WJWZWFX44Q"
+  };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
