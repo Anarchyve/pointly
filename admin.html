@@ -12,20 +12,20 @@
     <button id="logoutBtn" class="btn">Logout</button>
   </div>
 
-  <!-- Firebase Initialization -->
+  <!-- Firebase Logout Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
-      authDomain: "pointly-28101.firebaseapp.com",
-      projectId: "pointly-28101",
-      storageBucket: "pointly-28101.appspot.com",
-      messagingSenderId: "75956245415",
-      appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
-      measurementId: "G-WJWZWFX44Q"
-    };
+    apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+    authDomain: "pointly-28101.firebaseapp.com",
+    projectId: "pointly-28101",
+    storageBucket: "pointly-28101.appspot.com",
+    messagingSenderId: "75956245415",
+    appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+    measurementId: "G-WJWZWFX44Q"
+  };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);

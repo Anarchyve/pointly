@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Google Login</title>
+  <title>Google Login</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,27 +16,33 @@
   <!-- Firebase Initialization -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-analytics.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
+    // Firebase config
     const firebaseConfig = {
-      apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
-      authDomain: "pointly-28101.firebaseapp.com",
-      projectId: "pointly-28101",
-      storageBucket: "pointly-28101.appspot.com",
-      messagingSenderId: "75956245415",
-      appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
-      measurementId: "G-WJWZWFX44Q"
-    };
+    apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+    authDomain: "pointly-28101.firebaseapp.com",
+    projectId: "pointly-28101",
+    storageBucket: "pointly-28101.appspot.com",
+    messagingSenderId: "75956245415",
+    appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+    measurementId: "G-WJWZWFX44Q"
+  };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-    export { auth, GoogleAuthProvider, signInWithPopup };
+    document.getElementById('googleLoginBtn').addEventListener('click', () => {
+      signInWithPopup(auth, provider)
+        .then(() => {
+          window.location.href = 'admin.html';  // 로그인 성공 시 admin 페이지로 이동
+        })
+        .catch((error) => {
+          document.getElementById('message').textContent = `Error: ${error.message}`;
+        });
+    });
   </script>
-
-  <!-- Custom JS Script -->
-  <script src="app.js" type="module"></script>
 </body>
 </html>
