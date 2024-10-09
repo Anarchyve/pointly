@@ -32,6 +32,7 @@
   <!-- Firebase Initialization -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
     // Firebase config
@@ -47,7 +48,20 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
+
+    // 교사용 구글 로그인
+    const provider = new GoogleAuthProvider();
+    document.getElementById('googleLoginBtn').addEventListener('click', () => {
+      signInWithPopup(auth, provider)
+        .then(() => {
+          window.location.href = 'admin.html';  // 구글 로그인 성공 시 admin 페이지로 이동
+        })
+        .catch((error) => {
+          document.getElementById('message').textContent = `Error: ${error.message}`;
+        });
+    });
 
     // 학생 로그인 버튼 클릭 이벤트
     document.getElementById('studentLoginBtn').addEventListener('click', async () => {
