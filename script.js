@@ -1,5 +1,5 @@
 // Firebase 설정
-const firebaseConfig = {
+var firebaseConfig = {
     apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
     authDomain: "pointly-28101.firebaseapp.com",
     projectId: "pointly-28101",
@@ -11,34 +11,34 @@ const firebaseConfig = {
   
   // Firebase 초기화
   firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+  var auth = firebase.auth();
+  var db = firebase.firestore();
   
   // 구글 로그인
-  document.getElementById('googleLoginBtn').addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
+  document.getElementById('googleLoginBtn').addEventListener('click', function() {
+      var provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
-          .then((result) => {
+          .then(function(result) {
               // 관리자로 로그인 성공 후 관리자 페이지로 이동
               window.location.href = 'admin.html';
           })
-          .catch((error) => {
+          .catch(function(error) {
               console.error('Google login error:', error);
           });
   });
   
   // 학생 로그인
-  document.getElementById('studentLoginForm').addEventListener('submit', (e) => {
+  document.getElementById('studentLoginForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
   
       auth.signInWithEmailAndPassword(email, password)
-          .then((userCredential) => {
+          .then(function(userCredential) {
               // 학생 로그인 성공 후 학생 페이지로 이동
               window.location.href = 'student.html';
           })
-          .catch((error) => {
+          .catch(function(error) {
               console.error('Student login error:', error);
               alert('Login failed: ' + error.message);
           });
@@ -49,10 +49,9 @@ const firebaseConfig = {
       db.collection('signupRequests').add({
           email: email,
           approved: false
-      }).then(() => {
+      }).then(function() {
           alert('Signup request submitted.');
-      }).catch((error) => {
+      }).catch(function(error) {
           console.error('Error submitting request:', error);
       });
-  }
-  
+  }  
