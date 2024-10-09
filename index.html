@@ -32,7 +32,7 @@
   <!-- Firebase Initialization -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
     // Firebase config
     const firebaseConfig = {
@@ -47,30 +47,36 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+    const db = getFirestore(app);
 
-    // 교사용 구글 로그인
-    document.getElementById('googleLoginBtn').addEventListener('click', () => {
-      signInWithPopup(auth, provider)
-        .then(() => {
-          window.location.href = 'admin.html';  // 로그인 성공 시 admin 페이지로 이동
-        })
-        .catch((error) => {
-          document.getElementById('message').textContent = `Error: ${error.message}`;
-        });
-    });
-
-    // 학생용 로그인 버튼 클릭 이벤트 (단순 로그인을 위한 placeholder 코드)
-    document.getElementById('studentLoginBtn').addEventListener('click', () => {
+    // 학생 로그인 버튼 클릭 이벤트
+    document.getElementById('studentLoginBtn').addEventListener('click', async () => {
       const studentId = document.getElementById('studentId').value;
       const studentPassword = document.getElementById('studentPassword').value;
 
-      // 여기에서 실제 Firebase Auth나 Firestore를 활용하여 학생 로그인 처리
-      if (studentId === 'student' && studentPassword === 'password') {
-        window.location.href = 'student.html';  // 성공 시 학생 전용 페이지로 이동 (임시)
+      if (studentId && studentPassword) {
+        try {
+          // Firestore에서 학생 정보 가져오기
+          const studentRef = doc(db, 'signupRequests', studentId);
+          const studentSnap = await getDoc(studentRef);
+
+          if (studentSnap.exists()) {
+            const studentData = studentSnap.data();
+
+            // 승인된 학생인지 확인
+            if (studentData.status === 'approved' && studentData.password === studentPassword) {
+              window.location.href = 'student.html';  // 로그인 성공 시 학생 페이지로 이동
+            } else {
+              document.getElementById('message').textContent = 'Invalid credentials or not approved yet';
+            }
+          } else {
+            document.getElementById('message').textContent = 'Student not found';
+          }
+        } catch (error) {
+          document.getElementById('message').textContent = `Error: ${error.message}`;
+        }
       } else {
-        document.getElementById('message').textContent = 'Invalid login credentials';
+        document.getElementById('message').textContent = 'Please fill in all fields';
       }
     });
   </script>
