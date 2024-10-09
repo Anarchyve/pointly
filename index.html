@@ -2,31 +2,20 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Firebase Google 로그인 예제</title>
+    <!-- CSS 파일 링크 -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Login</h1>
 
-    <!-- 구글 로그인 버튼 -->
-    <button id="googleLoginBtn">Login with Google</button>
+    <!-- 로그인 상태 표시 -->
+    <div id="user-details"></div>
 
-    <!-- 학생 로그인 폼 -->
-    <h2>Student Login</h2>
-    <form id="studentLoginForm">
-        <label for="email">Email:</label>
-        <input type="email" id="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" required>
-        <button type="submit">Login</button>
-    </form>
+    <!-- 로그인 및 로그아웃 버튼 -->
+    <button id="googleLogin">Google로 로그인</button>
+    <button id="logout" style="display: none;">로그아웃</button>
 
-    <!-- Firebase SDKs (Firebase 8.x 버전 사용) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-    <!-- 스크립트 파일 -->
-    <script src="script.js"></script>
+    <!-- JavaScript 파일 링크 -->
+    <script type="module" src="app.js"></script>
 </body>
 </html>

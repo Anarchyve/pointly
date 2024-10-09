@@ -1,0 +1,17 @@
+/* 버튼 스타일 */
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+/* 숨겨진 버튼 */
+button#logout {
+    display: none;
+}
+
+/* 사용자 정보 표시 스타일 */
+#user-details {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
