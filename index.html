@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,11 +15,11 @@
   </div>
 
   <!-- Firebase App (the core Firebase SDK) -->
-  <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
   <!-- Firebase Authentication -->
-  <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
 
-  <script type="module">
+  <script>
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
@@ -31,16 +32,16 @@
     };
 
     // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.getAuth();
-    const provider = new firebase.GoogleAuthProvider();
+    firebase.initializeApp(firebaseConfig);
 
-    // Google login button functionality
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+
     document.getElementById('googleLoginBtn').addEventListener('click', () => {
       auth.signInWithPopup(provider)
         .then((result) => {
           const user = result.user;
-          window.location.href = 'admin.html'; // Redirect to admin page on login success
+          window.location.href = 'admin.html';
         })
         .catch((error) => {
           document.getElementById('message').textContent = `Error: ${error.message}`;
