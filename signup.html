@@ -1,3 +1,4 @@
+<!-- signup.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +42,7 @@
 
       if (studentId && studentPassword) {
         try {
-          // 회원가입 요청 정보를 Firestore에 저장
+          // 회원가입 요청 정보를 'students' 컬렉션에 저장
           await setDoc(doc(db, 'students', studentId), {
             id: studentId,
             password: studentPassword,
