@@ -17,7 +17,7 @@
   <!-- Firebase Initialization -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
     // Firebase config
@@ -37,8 +37,7 @@
     const db = getFirestore(app);
 
     // 로그인한 학생의 잔액을 Firestore에서 가져오기
-    async function loadBalance() {
-      const user = auth.currentUser;  // 현재 로그인된 사용자 정보 가져오기
+    async function loadBalance(user) {
       if (user) {
         try {
           // Firestore에서 로그인한 학생의 ID로 문서 참조
@@ -60,10 +59,15 @@
       }
     }
 
-    // 페이지 로드 시 잔액 조회
-    window.onload = () => {
-      loadBalance();
-    };
+    // 로그인 상태 변화 감지 및 잔액 로딩
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // 로그인 상태일 경우, 학생의 잔액 로드
+        loadBalance(user);
+      } else {
+        document.getElementById('balance').textContent = 'User not logged in';
+      }
+    });
 
     // 로그아웃 버튼 클릭 이벤트
     document.getElementById('logoutBtn').addEventListener('click', () => {
