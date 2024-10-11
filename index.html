@@ -25,14 +25,15 @@
       <input type="password" id="studentPassword" placeholder="Enter your Password" class="input">
       <button id="studentLoginBtn" class="btn">Login</button>
       <div id="message"></div>
+      <button id="signupBtn" class="btn">Request Signup</button> <!-- 회원가입 버튼 추가 -->
     </div>
   </div>
 
   <!-- Firebase Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
     // Firebase config
     const firebaseConfig = {
@@ -62,6 +63,28 @@
         });
     });
 
+    // 학생 회원가입 요청
+    document.getElementById('signupBtn').addEventListener('click', async () => {
+      const studentId = document.getElementById('studentId').value;
+      const studentPassword = document.getElementById('studentPassword').value;
+
+      if (studentId && studentPassword) {
+        try {
+          await setDoc(doc(db, 'students', studentId), {
+            id: studentId,
+            password: studentPassword,
+            balance: 0,
+            status: 'pending'
+          });
+          document.getElementById('message').textContent = 'Signup request sent successfully!';
+        } catch (error) {
+          document.getElementById('message').textContent = `Error: ${error.message}`;
+        }
+      } else {
+        document.getElementById('message').textContent = 'Please fill in all fields.';
+      }
+    });
+
     // 학생 로그인
     document.getElementById('studentLoginBtn').addEventListener('click', async () => {
       const studentId = document.getElementById('studentId').value;
@@ -69,7 +92,7 @@
 
       if (studentId && studentPassword) {
         try {
-          // Firestore에서 학생 정보 가져오기 ('students' 컬렉션 사용)
+          // Firestore에서 학생 정보 가져오기
           const studentRef = doc(db, 'students', studentId);
           const studentSnap = await getDoc(studentRef);
 
@@ -78,8 +101,6 @@
 
             // 승인된 학생인지 확인
             if (studentData.status === 'approved' && studentData.password === studentPassword) {
-              // Firebase Authentication으로 로그인
-              await signInWithEmailAndPassword(auth, studentId, studentPassword);
               window.location.href = 'student.html';  // 로그인 성공 시 학생 페이지로 이동
             } else {
               document.getElementById('message').textContent = 'Invalid credentials or not approved yet';
