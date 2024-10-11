@@ -3,50 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signup</title>
+  <title>Signup Request</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Signup</h1>
-    <input type="email" id="email" placeholder="Email" class="input">
-    <input type="password" id="password" placeholder="Password" class="input">
-    <button id="signupBtn" class="btn">Sign Up</button>
+    <h1>Signup Request</h1>
+    <input type="text" id="studentId" placeholder="Enter your ID" class="input">
+    <input type="password" id="studentPassword" placeholder="Enter your password" class="input">
+    <button id="signupBtn" class="btn">Request Signup</button>
     <div id="message"></div>
   </div>
 
-  <!-- Firebase JS SDK 및 설정 -->
+  <!-- Firebase Script -->
   <script type="module">
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { app } from "./firebase-config.js";  // Firebase 설정 파일 포함
 
-    const auth = getAuth(app);
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+      authDomain: "pointly-28101.firebaseapp.com",
+      projectId: "pointly-28101",
+      storageBucket: "pointly-28101.appspot.com",
+      messagingSenderId: "75956245415",
+      appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+      measurementId: "G-WJWZWFX44Q"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     document.getElementById('signupBtn').addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const studentId = document.getElementById('studentId').value;
+      const studentPassword = document.getElementById('studentPassword').value;
 
-      if (email && password) {
+      if (studentId && studentPassword) {
         try {
-          // Firebase Authentication으로 사용자 생성
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-
-          // Firestore에 학생 정보 저장
-          await setDoc(doc(db, 'students', user.uid), {
-            email: email,
-            balance: 0,       // 초기 잔액 설정
-            status: 'pending' // 계정 승인 대기 상태
+          // 회원가입 요청 정보를 Firestore에 저장
+          await setDoc(doc(db, 'students', studentId), {
+            id: studentId,
+            password: studentPassword,
+            balance: 0,  // 초기 잔액 0으로 설정
+            status: 'pending'  // 요청 상태를 대기 중으로 설정
           });
 
-          document.getElementById('message').textContent = 'Signup successful!';
+          document.getElementById('message').textContent = 'Signup request sent successfully!';
         } catch (error) {
           document.getElementById('message').textContent = `Error: ${error.message}`;
         }
       } else {
-        document.getElementById('message').textContent = 'Please fill in all fields';
+        document.getElementById('message').textContent = 'Please fill in all fields.';
       }
     });
   </script>

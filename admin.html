@@ -3,48 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
+  <title>Admin Page</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Admin Dashboard</h1>
-    <ul id="studentList"></ul>
+    <h1>Welcome, Admin</h1>
+
+    <!-- 회원가입 요청 리스트 -->
+    <div id="requests">
+      <h2>Signup Requests</h2>
+      <ul id="requestList"></ul>
+    </div>
+
+    <!-- 로그아웃 버튼 -->
+    <button id="logoutBtn" class="btn">Logout</button>
   </div>
 
+  <!-- Firebase Script -->
   <script type="module">
-    import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { app } from "./firebase-config.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+      authDomain: "pointly-28101.firebaseapp.com",
+      projectId: "pointly-28101",
+      storageBucket: "pointly-28101.appspot.com",
+      messagingSenderId: "75956245415",
+      appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+      measurementId: "G-WJWZWFX44Q"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Firestore에서 승인 대기 중인 학생 목록 불러오기
-    async function loadPendingStudents() {
-      const querySnapshot = await getDocs(collection(db, 'students'));
-      const studentList = document.getElementById('studentList');
-      querySnapshot.forEach((docSnap) => {
-        const student = docSnap.data();
-        if (student.status === 'pending') {
-          const li = document.createElement('li');
-          li.textContent = `${student.email} - Status: ${student.status}`;
+    // 로그아웃 기능
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.location.href = 'index.html';  // 로그아웃 후 로그인 페이지로 이동
+      }).catch((error) => {
+        console.error('Error logging out:', error);
+      });
+    });
 
-          const approveBtn = document.createElement('button');
-          approveBtn.textContent = 'Approve';
-          approveBtn.addEventListener('click', async () => {
-            await updateDoc(doc(db, 'students', docSnap.id), {
-              status: 'approved'
-            });
-            alert(`${student.email} has been approved`);
-            location.reload();
-          });
+    // 회원가입 요청 리스트 불러오기
+    async function loadSignupRequests() {
+      const requestList = document.getElementById('requestList');
+      const querySnapshot = await getDocs(collection(db, 'signupRequests'));
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const li = document.createElement('li');
+        li.textContent = `ID: ${data.id} - Status: ${data.status}`;
 
-          li.appendChild(approveBtn);
-          studentList.appendChild(li);
-        }
+        // 승인 버튼
+        const approveBtn = document.createElement('button');
+        approveBtn.textContent = 'Approve';
+        approveBtn.addEventListener('click', () => approveSignup(data.id));
+
+        // 삭제 버튼
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => deleteSignup(data.id));
+
+        li.appendChild(approveBtn);
+        li.appendChild(deleteBtn);
+        requestList.appendChild(li);
       });
     }
 
-    loadPendingStudents();
+    // 회원가입 승인
+    async function approveSignup(studentId) {
+      const studentRef = doc(db, 'signupRequests', studentId);
+      await updateDoc(studentRef, {
+        status: 'approved'
+      });
+
+      // Firestore에서 승인된 학생을 학생 컬렉션에 추가하거나 인증 시스템에 연결할 수 있음
+      alert(`Student ${studentId} has been approved.`);
+      location.reload();  // 승인 후 페이지 새로고침
+    }
+
+    // 회원가입 요청 삭제
+    async function deleteSignup(studentId) {
+      await deleteDoc(doc(db, 'signupRequests', studentId));
+      alert(`Signup request for ${studentId} has been deleted.`);
+      location.reload();  // 삭제 후 페이지 새로고침
+    }
+
+    // 페이지 로드 시 회원가입 요청 불러오기
+    loadSignupRequests();
   </script>
 </body>
 </html>

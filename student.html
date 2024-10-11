@@ -3,46 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard</title>
+  <title>Student Page</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Your Balance</h1>
-    <p>Balance: <span id="balance"></span> points</p>
+    <h1>Welcome, Student</h1>
+    <p>Your current balance is: <span id="balance">Loading...</span> points</p>
+    <!-- 로그아웃 버튼 -->
     <button id="logoutBtn" class="btn">Logout</button>
   </div>
 
+  <!-- Firebase Initialization -->
   <script type="module">
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-    import { app } from "./firebase-config.js";
 
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
+      authDomain: "pointly-28101.firebaseapp.com",
+      projectId: "pointly-28101",
+      storageBucket: "pointly-28101.appspot.com",
+      messagingSenderId: "75956245415",
+      appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
+      measurementId: "G-WJWZWFX44Q"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // 사용자 로그인 상태 감지
-    onAuthStateChanged(auth, async (user) => {
+    // 로그인한 학생의 잔액을 Firestore에서 가져오기
+    async function loadBalance() {
+      const user = auth.currentUser;
       if (user) {
-        // Firestore에서 잔액 정보 가져오기
-        const docRef = doc(db, 'students', user.uid);
-        const docSnap = await getDoc(docRef);
+        const studentRef = doc(db, 'students', user.uid);  // 로그인한 학생의 uid로 문서 참조
+        const studentSnap = await getDoc(studentRef);
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          document.getElementById('balance').textContent = data.balance;
+        if (studentSnap.exists()) {
+          const studentData = studentSnap.data();
+          document.getElementById('balance').textContent = studentData.balance;  // 잔액 표시
         } else {
           document.getElementById('balance').textContent = 'No data found';
         }
-      } else {
-        window.location.href = 'index.html'; // 로그인 상태가 아니면 로그인 페이지로 이동
       }
-    });
+    }
 
-    // 로그아웃 버튼
+    // 페이지 로드 시 잔액 조회
+    window.onload = () => {
+      loadBalance();
+    };
+
+    // 로그아웃 버튼 클릭 이벤트
     document.getElementById('logoutBtn').addEventListener('click', () => {
       signOut(auth).then(() => {
-        window.location.href = 'index.html'; // 로그아웃 후 로그인 페이지로 이동
+        window.location.href = 'index.html';  // 로그아웃 후 로그인 페이지로 이동
+      }).catch((error) => {
+        console.error('Error logging out:', error);
       });
     });
   </script>
