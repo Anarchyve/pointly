@@ -38,17 +38,25 @@
 
     // 로그인한 학생의 잔액을 Firestore에서 가져오기
     async function loadBalance() {
-      const user = auth.currentUser;
+      const user = auth.currentUser;  // 현재 로그인된 사용자 정보 가져오기
       if (user) {
-        const studentRef = doc(db, 'students', user.uid);  // 로그인한 학생의 uid로 문서 참조
-        const studentSnap = await getDoc(studentRef);
+        try {
+          // Firestore에서 로그인한 학생의 ID로 문서 참조
+          const studentRef = doc(db, 'students', user.uid);
+          const studentSnap = await getDoc(studentRef);
 
-        if (studentSnap.exists()) {
-          const studentData = studentSnap.data();
-          document.getElementById('balance').textContent = studentData.balance;  // 잔액 표시
-        } else {
-          document.getElementById('balance').textContent = 'No data found';
+          if (studentSnap.exists()) {
+            const studentData = studentSnap.data();
+            document.getElementById('balance').textContent = studentData.balance;  // 잔액 표시
+          } else {
+            document.getElementById('balance').textContent = 'No data found';
+          }
+        } catch (error) {
+          console.error('Error loading balance:', error);
+          document.getElementById('balance').textContent = 'Error loading balance';
         }
+      } else {
+        document.getElementById('balance').textContent = 'User not logged in';
       }
     }
 
