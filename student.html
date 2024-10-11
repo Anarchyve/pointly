@@ -3,43 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Page</title>
+  <title>Student Dashboard</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Welcome, Student</h1>
-    <p>This is your dashboard. Here, you can view your points and transactions.</p>
-    <!-- 로그아웃 버튼 -->
+    <h1>Your Balance</h1>
+    <p>Balance: <span id="balance"></span> points</p>
     <button id="logoutBtn" class="btn">Logout</button>
   </div>
 
-  <!-- Firebase Initialization -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { app } from "./firebase-config.js";
 
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDh216FMIAH2VQBmOJdWVQr6gE-aHb8eRc",
-      authDomain: "pointly-28101.firebaseapp.com",
-      projectId: "pointly-28101",
-      storageBucket: "pointly-28101.appspot.com",
-      messagingSenderId: "75956245415",
-      appId: "1:75956245415:web:ed4ba383f9997f408a1c82",
-      measurementId: "G-WJWZWFX44Q"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // 로그아웃 버튼 클릭 이벤트
+    // 사용자 로그인 상태 감지
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Firestore에서 잔액 정보 가져오기
+        const docRef = doc(db, 'students', user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById('balance').textContent = data.balance;
+        } else {
+          document.getElementById('balance').textContent = 'No data found';
+        }
+      } else {
+        window.location.href = 'index.html'; // 로그인 상태가 아니면 로그인 페이지로 이동
+      }
+    });
+
+    // 로그아웃 버튼
     document.getElementById('logoutBtn').addEventListener('click', () => {
       signOut(auth).then(() => {
-        window.location.href = 'index.html';  // 로그아웃 후 로그인 페이지로 이동
-      }).catch((error) => {
-        console.error('Error logging out:', error);
+        window.location.href = 'index.html'; // 로그아웃 후 로그인 페이지로 이동
       });
     });
   </script>
